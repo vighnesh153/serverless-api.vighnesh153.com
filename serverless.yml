@@ -5,7 +5,21 @@ service: serverless-api-vighnesh153-com
 frameworkVersion: '2'
 
 custom:
-  tableName: 'users-table-${self:provider.stage}'
+  customDomain:
+    domainName: '${param:DOMAIN}'
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+  stage: '${self:provider.stage}'
+  usersTableName: 'users-table-${self:provider.stage}'
+  sessionsTableName: 'sessions-table-${self:provider.stage}'
+  backendBucketName: 'backend-bucket.api.vighnesh153.com-${self:provider.stage}'
+
+plugins:
+  - serverless-domain-manager
+
+package:
+  individually: true
 
 provider:
   name: aws
@@ -24,9 +38,17 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [ UsersTable, Arn ]
+            - Fn::GetAtt: [ UsersTable, SessionsTable, Arn ]
   environment:
-    USERS_TABLE: ${self:custom.tableName}
+    USERS_TABLE: ${self:custom.usersTableName}
+    SESSIONS_TABLE: ${self:custom.sessionsTableName}
+    BACKEND_BUCKET: ${self:custom.backendBucketName}
+    COOKIE_SECRET: '${param:COOKIE_SECRET}'
+    DOMAIN: '${param:DOMAIN}'
+    AUTH_CLIENT_URL: '${param:AUTH_CLIENT_URL}'
+    GOOGLE_ADMIN_EMAILS: 'vighnesh.raut13@gmail.com,me@vighnesh153.com'
+    GOOGLE_CLIENT_ID: '${param:GOOGLE_CLIENT_ID}'
+    GOOGLE_CLIENT_SECRET: '${param:GOOGLE_CLIENT_SECRET}'
 
 functions:
   api:
@@ -35,22 +57,50 @@ functions:
       - http:
           path: /
           method: ANY
+          cors: true
       - http:
           path: /{proxy+}
           method: ANY
+          cors: true
 
 resources:
   Resources:
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
+        TableName: ${self:custom.usersTableName}
         AttributeDefinitions:
           - AttributeName: userId
+            AttributeType: S
+          - AttributeName: userFullName
+            AttributeType: S
+          - AttributeName: userImageUrl
+            AttributeType: S
+          - AttributeName: userRoles
             AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:custom.tableName}
+        BillingMode: PAY_PER_REQUEST
+    SessionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.sessionsTableName}
+        AttributeDefinitions:
+          - AttributeName: identifier
+            AttributeType: S
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: roles
+            AttributeType: S
+          - AttributeName: expiresAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: identifier
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    BackendBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.backendBucketName}
