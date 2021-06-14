@@ -38,7 +38,8 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [ UsersTable, SessionsTable, Arn ]
+            - Fn::GetAtt: [ UsersTable, Arn ]
+            - Fn::GetAtt: [ SessionsTable, Arn ]
   environment:
     USERS_TABLE: ${self:custom.usersTableName}
     SESSIONS_TABLE: ${self:custom.sessionsTableName}
@@ -89,12 +90,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: identifier
             AttributeType: S
-          - AttributeName: userId
-            AttributeType: S
-          - AttributeName: roles
-            AttributeType: S
-          - AttributeName: expiresAt
-            AttributeType: S
+#          - AttributeName: userId
+#            AttributeType: S
+#          - AttributeName: roles
+#            AttributeType: S
+#          - AttributeName: expiresAt
+#            AttributeType: S
         KeySchema:
           - AttributeName: identifier
             KeyType: HASH

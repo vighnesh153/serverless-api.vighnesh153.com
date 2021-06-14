@@ -14,7 +14,7 @@ async function createSession(user) {
     identifier: crypto.randomBytes(50).toString('hex'),
     userId: user.userId,
     roles: user.roles,
-    expiresAt: new CustomDate().addHours(config.SESSION_EXPIRY_HOURS).toDate(),
+    expiresAt: new CustomDate().addHours(config.SESSION_EXPIRY_HOURS).getTimestamp(),
   });
 }
 

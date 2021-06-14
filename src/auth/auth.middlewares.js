@@ -10,7 +10,9 @@ const { CustomDate } = require('../util');
 
 const domain = config.UTILS.isProduction() ? 'vighnesh153.com' : 'localhost';
 
-const passportGoogleAuth = passport.authenticate('google');
+const passportGoogleAuth = passport.authenticate('google', {
+  scope: [ 'email', 'profile' ],
+});
 
 const passportGoogleAuthCallback = passport.authenticate('google', {
   failureRedirect: config.AUTH_CLIENT_URL,
@@ -18,16 +20,22 @@ const passportGoogleAuthCallback = passport.authenticate('google', {
 
 async function googleSignupSuccess(req, res, next) {
   try {
+    console.log(req.user);
     const session = await AuthService.createSession(req.user);
+    console.log(session);
 
     const expiresAt = new CustomDate()
       .addHours(config.SESSION_EXPIRY_HOURS)
       .toDate();
+    console.log(expiresAt);
+
     const userInfo = {
       name: req.user.name,
       roles: req.user.roles,
       profileImage: req.user.profileImage,
     };
+    console.log(userInfo);
+
     res.cookie('sessionId', session.identifier, {
       httpOnly: true,
       secure: true,

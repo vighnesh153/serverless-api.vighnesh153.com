@@ -51,4 +51,6 @@ if (missingEnvVars.length > 0) {
   process.exit(1);
 }
 
+console.log(config);
+
 module.exports = config;
