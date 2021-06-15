@@ -26,6 +26,15 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
   stage: dev
+#  http:
+#    cors:
+#      allowedOrigins:
+#        - "http://localhost:3000"
+#        - "https://auth.vighnesh153.com"
+#      allowedHeaders:
+#        - Content-Type
+#      allowedMethods: "*"
+#      allowCredentials: true
   iam:
     role:
       statements:
