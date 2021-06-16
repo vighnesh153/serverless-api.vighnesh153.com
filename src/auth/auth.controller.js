@@ -4,6 +4,8 @@
 
 const router = require('express').Router();
 
+require('./passport');
+
 const authMiddlewares = require('./auth.middlewares');
 const middlewares = require('../middlewares');
 

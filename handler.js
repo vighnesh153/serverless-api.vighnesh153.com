@@ -29,7 +29,7 @@ app.get("/users/:userId", async function (req, res) {
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Could not retreive user" });
+    res.status(500).json({ error: "Could not retrieve user" });
   }
 });
 
@@ -57,6 +57,9 @@ app.post("/users", async function (req, res) {
     res.status(500).json({ error: "Could not create user" });
   }
 });
+
+const authRoutes = require('./src/auth/auth.controller');
+app.use('/auth', authRoutes);
 
 app.use((req, res, next) => {
   return res.status(404).json({

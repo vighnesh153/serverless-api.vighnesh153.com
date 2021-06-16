@@ -20,21 +20,23 @@ const passportGoogleAuthCallback = passport.authenticate('google', {
 
 async function googleSignupSuccess(req, res, next) {
   try {
-    console.log(req.user);
+    console.log("Google Signup/Signin Success");
+    console.log("req", req);
+    console.log("req.user", req.user);
     const session = await AuthService.createSession(req.user);
-    console.log(session);
+    console.log("session", session);
 
     const expiresAt = new CustomDate()
       .addHours(config.SESSION_EXPIRY_HOURS)
       .toDate();
-    console.log(expiresAt);
+    console.log("expiresAt", expiresAt);
 
     const userInfo = {
       name: req.user.name,
       roles: req.user.roles,
       profileImage: req.user.profileImage,
     };
-    console.log(userInfo);
+    console.log("userInfo", userInfo);
 
     res.cookie('sessionId', session.identifier, {
       httpOnly: true,
@@ -49,8 +51,6 @@ async function googleSignupSuccess(req, res, next) {
     });
     res.redirect(`${config.AUTH_CLIENT_URL}?loginSuccess`);
   } catch (err) {
-    err.isTrusted = true;
-    err.statusCode = 500;
     next(err);
   }
 }
