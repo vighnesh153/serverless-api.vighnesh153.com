@@ -8,6 +8,4 @@ const app = express();
 
 loaders(app);
 
-;
-
 module.exports.handler = serverless(app);

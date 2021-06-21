@@ -23,6 +23,10 @@ router.get(
   authMiddlewares.verifyLoginSuccess,
 );
 
+router.get('/test', middlewares.ensureAuthenticated, (req, res) => res.json({
+  message: 'yippie',
+}))
+
 router.use(authMiddlewares.catchAllWildcardRouteHandler);
 
 module.exports = router;

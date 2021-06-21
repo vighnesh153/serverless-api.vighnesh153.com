@@ -8,7 +8,8 @@ const AuthService = require('./auth.service');
 const config = require('../config');
 const { CustomDate } = require('../util');
 
-const domain = config.UTILS.isProduction() ? 'vighnesh153.com' : 'localhost';
+const domain = config.UTILS.isProduction() ? 'vighnesh153.com' : 'localhost:3000';
+const sameSite = config.UTILS.isProduction() ? 'lax' : 'none';
 
 const passportGoogleAuth = passport.authenticate('google', {
   scope: [ 'email', 'profile' ],
@@ -44,10 +45,13 @@ async function googleSignupSuccess(req, res, next) {
       domain,
       signed: true,
       expires: expiresAt,
+      sameSite,
     });
     res.cookie('user', JSON.stringify(userInfo), {
       expires: expiresAt,
       domain,
+      secure: true,
+      sameSite,
     });
     res.redirect(`${config.AUTH_CLIENT_URL}?loginSuccess`);
   } catch (err) {

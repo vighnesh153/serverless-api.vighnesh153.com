@@ -7,7 +7,7 @@ const path = require('path');
 const missingEnvVars = [];
 const addMissingEnvVar = (varName) => missingEnvVars.push(varName);
 
-const environment = process.env['stage'] === 'dev' ? 'development' : 'production';
+const environment = process.env['STAGE'] === 'dev' ? 'development' : 'production';
 const isProduction = () => environment === "production";
 
 const config = {

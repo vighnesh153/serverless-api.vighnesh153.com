@@ -55,6 +55,7 @@ provider:
     BACKEND_BUCKET: ${self:custom.backendBucketName}
     COOKIE_SECRET: '${param:COOKIE_SECRET}'
     DOMAIN: '${param:DOMAIN}'
+    STAGE: '${param:STAGE}'
     AUTH_CLIENT_URL: '${param:AUTH_CLIENT_URL}'
     GOOGLE_ADMIN_EMAILS: 'vighnesh.raut13@gmail.com,me@vighnesh153.com'
     GOOGLE_CLIENT_ID: '${param:GOOGLE_CLIENT_ID}'
@@ -67,11 +68,19 @@ functions:
       - http:
           path: /
           method: ANY
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
       - http:
           path: /{proxy+}
           method: ANY
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+            allowCredentials: true
 
 resources:
   Resources:

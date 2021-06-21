@@ -8,13 +8,16 @@ const config = require('../config');
 
 const domain = config.UTILS.isProduction() ? 'vighnesh153.com' : 'localhost';
 
+const sameSite = config.UTILS.isProduction() ? 'lax' : 'none';
+
 module.exports = function configureCSRF(app) {
   app.use(
     csrf({
       cookie: {
         httpOnly: true,
-        secure: config.UTILS.isProduction(),
+        secure: true,
         signed: true,
+        sameSite,
       },
       ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
     }),
@@ -22,8 +25,9 @@ module.exports = function configureCSRF(app) {
 
   app.use((req, res, next) => {
     res.cookie('vighnesh153-XSRF-TOKEN', req.csrfToken(), {
-      secure: config.UTILS.isProduction(),
+      secure: true,
       domain,
+      sameSite,
     });
     next();
   });

@@ -11,6 +11,10 @@ const clearCookies = (res) => {
 };
 
 const ensureAuthenticated = async (req, res, next) => {
+  console.log('Inside ensure Authenticated.');
+  console.log('req', req);
+  console.log('user', req.user);
+
   const { sessionId } = req.signedCookies;
   if (!sessionId) {
     clearCookies(res);
