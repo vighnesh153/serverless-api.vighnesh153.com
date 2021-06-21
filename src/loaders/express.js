@@ -12,6 +12,8 @@ const configureRoutes = require('./routes');
 const config = require('../config');
 const middlewares = require('../middlewares');
 
+const passportConfig = require('../components/auth/passport');
+
 const authRoutes = require('../components/auth/auth.controller');
 
 module.exports = function configureExpress(app) {
@@ -41,6 +43,9 @@ module.exports = function configureExpress(app) {
   // view engine  config
   app.set('view engine', 'ejs');
   app.set('views', 'src/views');
+
+  // Passport config
+  passportConfig(app);
 
   // routes
   // configureRoutes(app);

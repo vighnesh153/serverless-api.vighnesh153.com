@@ -2,6 +2,7 @@
  * @author Vighnesh Raut <rvighnes@amazon.com>
  */
 
+const session = require('express-session');
 const passport = require('passport');
 
 const config = require('../../../config');
@@ -32,3 +33,9 @@ passport.deserializeUser(async (userId, done) => {
     done(err, null);
   }
 });
+
+module.exports = (app) => {
+  app.use(session({ secret: config.COOKIE_SECRET }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+};
