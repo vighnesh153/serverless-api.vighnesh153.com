@@ -11,6 +11,10 @@ const config = require('../../config');
 
 const router = require('express').Router();
 
+router.get('/', (req, res) => {
+  res.render('index');
+});
+
 router.get('/google',
   passport.authenticate('google', { scope:
       [ 'email', 'profile' ] }
@@ -22,4 +26,4 @@ router.get( '/google/callback',
     failureRedirect: config.AUTH_CLIENT_URL,
   }));
 
-export default router;
+module.exports = router;

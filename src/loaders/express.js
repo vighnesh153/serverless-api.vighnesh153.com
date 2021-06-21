@@ -35,9 +35,12 @@ module.exports = function configureExpress(app) {
   // health check
   app.use('/health', middlewares.healthCheck);
 
+  // public dir config
+  app.set('public', 'src/public');
+
   // view engine  config
   app.set('view engine', 'ejs');
-  app.set('views', 'public')
+  app.set('views', 'src/views');
 
   // routes
   // configureRoutes(app);

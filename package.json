@@ -2,6 +2,9 @@
   "name": "serverless-api-vighnesh153-com",
   "version": "1.0.0",
   "description": "",
+  "scripts": {
+    "start": "nodemon local-server.js"
+  },
   "dependencies": {
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -18,6 +21,8 @@
     "@types/express": "^4.17.12",
     "@types/passport": "^1.0.6",
     "@types/passport-google-oauth2": "^0.1.3",
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.7",
     "serverless-domain-manager": "^5.1.0"
   }
 }

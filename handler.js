@@ -1,11 +1,8 @@
-const express = require("express");
+/**
+ * @author Vighnesh Raut <rvighnes@amazon.com>
+ */
+
 const serverless = require("serverless-http");
-
-
-const loaders = require('./src/loaders');
-
-const app = express();
-
-loaders(app);
+const app = require('./src/app');
 
 module.exports.handler = serverless(app);

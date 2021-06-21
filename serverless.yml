@@ -10,6 +10,9 @@ custom:
     basePath: ''
     stage: ${self:provider.stage}
     createRoute53Record: true
+  profile:
+    dev: vighnesh153
+    prod: vighnesh153
   stage: '${self:provider.stage}'
   usersTableName: 'users-table-${self:provider.stage}'
   sessionsTableName: 'sessions-table-${self:provider.stage}'
@@ -26,6 +29,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
   stage: dev
+  profile: ${self:custom.profile.${self:custom.stage}}
 #  http:
 #    cors:
 #      allowedOrigins:
