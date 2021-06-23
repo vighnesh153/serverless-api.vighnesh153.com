@@ -20,7 +20,7 @@ module.exports = function csrfLoader(app) {
   );
 
   app.use((req, res, next) => {
-    res.cookie('vighnesh153-XSRF-TOKEN', req.csrfToken(), {
+    res.cookie(config.COOKIE.XSRF_COOKIE_NAME, req.csrfToken(), {
       secure: config.COOKIE.SECURE,
       httpOnly: false,
       domain: config.COOKIE.DOMAIN,

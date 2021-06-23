@@ -14,6 +14,7 @@ module.exports = (app) => {
   };
 
   const sessionOptions = {
+    name: config.SESSION.COOKIE_NAME,
     secret: config.COOKIE.SECRET,
     cookie: {
       secure: config.COOKIE.SECURE,

@@ -13,6 +13,7 @@ custom:
   profile:
     dev: vighnesh153
     prod: vighnesh153
+  logRetentionInDays: 14
   sessionHashKey: 'identifier'
   stage: '${self:provider.stage}'
   usersTableName: 'users-table-${self:provider.stage}'
@@ -21,6 +22,7 @@ custom:
 
 plugins:
   - serverless-domain-manager
+  - serverless-plugin-log-retention
 
 package:
   individually: true
