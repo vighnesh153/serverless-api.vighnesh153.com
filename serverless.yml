@@ -13,6 +13,7 @@ custom:
   profile:
     dev: vighnesh153
     prod: vighnesh153
+  sessionHashKey: 'identifier'
   stage: '${self:provider.stage}'
   usersTableName: 'users-table-${self:provider.stage}'
   sessionsTableName: 'sessions-table-${self:provider.stage}'
@@ -44,6 +45,7 @@ provider:
       statements:
         - Effect: Allow
           Action:
+            - dynamodb:CreateTable
             - dynamodb:Query
             - dynamodb:Scan
             - dynamodb:GetItem
@@ -54,9 +56,10 @@ provider:
             - Fn::GetAtt: [ UsersTable, Arn ]
             - Fn::GetAtt: [ SessionsTable, Arn ]
   environment:
-    USERS_TABLE: ${self:custom.usersTableName}
-    SESSIONS_TABLE: ${self:custom.sessionsTableName}
-    BACKEND_BUCKET: ${self:custom.backendBucketName}
+    USERS_TABLE: '${self:custom.usersTableName}'
+    SESSIONS_TABLE: '${self:custom.sessionsTableName}'
+    SESSION_HASH_KEY: '${self:custom.sessionHashKey}'
+    BACKEND_BUCKET: '${self:custom.backendBucketName}'
     COOKIE_SECRET: '${param:COOKIE_SECRET}'
     DOMAIN: '${param:DOMAIN}'
     STAGE: '${param:STAGE}'
@@ -110,16 +113,10 @@ resources:
       Properties:
         TableName: ${self:custom.sessionsTableName}
         AttributeDefinitions:
-          - AttributeName: identifier
+          - AttributeName: ${self:custom.sessionHashKey}
             AttributeType: S
-#          - AttributeName: userId
-#            AttributeType: S
-#          - AttributeName: roles
-#            AttributeType: S
-#          - AttributeName: expiresAt
-#            AttributeType: S
         KeySchema:
-          - AttributeName: identifier
+          - AttributeName: ${self:custom.sessionHashKey}
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
 

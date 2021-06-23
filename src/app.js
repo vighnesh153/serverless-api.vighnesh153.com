@@ -3,11 +3,8 @@
  */
 
 const express = require("express");
-
-const loaders = require('./loaders');
-
 const app = express();
 
-loaders(app);
+require('./loaders')(app);
 
 module.exports = app;

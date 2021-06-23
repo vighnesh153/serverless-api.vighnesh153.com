@@ -29,16 +29,14 @@ function formatGoogleProfile(profile) {
   return newUser;
 }
 
-passport.use(
-  'google',
-  new GoogleStrategy({
-    clientID: config.GOOGLE_CLIENT_ID,
+passport.use(new GoogleStrategy({
+    clientID:     config.GOOGLE_CLIENT_ID,
     clientSecret: config.GOOGLE_CLIENT_SECRET,
     callbackURL: `${config.HOST_URL}/auth/google/callback`,
-    passReqToCallback: true,
-    scope: ['email', 'profile']
+    passReqToCallback   : true,
+    scope: ['email', 'profile'],
   },
-  async (request, accessToken, refreshToken, profile, done) => {
+  async function(request, accessToken, refreshToken, profile, done) {
     try {
       const userObj = await Dynamo.read(config.TABLE_NAMES.USERS, {
         userId: profile.id,
@@ -48,28 +46,12 @@ passport.use(
         return;
       }
       const newUser = formatGoogleProfile(profile);
+      console.log('New User Registration:', newUser);
       await Dynamo.write(config.TABLE_NAMES.USERS, newUser);
       done(null, newUser);
     } catch (err) {
+      console.log('passport googleSignupSuccess [CATCH]', err);
       done(err, null);
     }
   }
 ));
-
-passport.serializeUser((user, done) => {
-  done(null, user['userId']);
-});
-
-passport.deserializeUser(async (userId, done) => {
-  try {
-    const userObj = await Dynamo.read(config.TABLE_NAMES.USERS, {userId})
-    if (userObj.Item) {
-      done(null, userObj.Item);
-    } else {
-      const err = new Error(`Couldn't deserialize user with id: "${userId}"`);
-      done(err, null);
-    }
-  } catch (err) {
-    done(err, null);
-  }
-});

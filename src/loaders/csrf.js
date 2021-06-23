@@ -3,21 +3,17 @@
  */
 
 const csrf = require('csurf');
-
 const config = require('../config');
 
-const domain = config.UTILS.isProduction() ? 'vighnesh153.com' : 'localhost';
-
-const sameSite = config.UTILS.isProduction() ? 'lax' : 'none';
-
-module.exports = function configureCSRF(app) {
+module.exports = function csrfLoader(app) {
   app.use(
     csrf({
       cookie: {
         httpOnly: true,
-        secure: true,
+        domain: config.COOKIE.DOMAIN,
+        secure: config.COOKIE.SECURE,
         signed: true,
-        sameSite,
+        sameSite: config.COOKIE.SAME_SITE,
       },
       ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
     }),
@@ -25,9 +21,10 @@ module.exports = function configureCSRF(app) {
 
   app.use((req, res, next) => {
     res.cookie('vighnesh153-XSRF-TOKEN', req.csrfToken(), {
-      secure: true,
-      domain,
-      sameSite,
+      secure: config.COOKIE.SECURE,
+      httpOnly: false,
+      domain: config.COOKIE.DOMAIN,
+      sameSite: config.COOKIE.SAME_SITE,
     });
     next();
   });

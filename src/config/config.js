@@ -17,8 +17,17 @@ const config = {
 
   // Server configurations
   ENV: environment,
-  COOKIE_SECRET: process.env.COOKIE_SECRET || addMissingEnvVar('COOKIE_SECRET'),
-  SESSION_EXPIRY_HOURS: isProduction() ? 7 * 24 : 1, // 7 days for production and 1 hour for dev
+  COOKIE: {
+    SECURE: isProduction(),
+    SECRET: process.env.COOKIE_SECRET || addMissingEnvVar('COOKIE_SECRET'),
+    DOMAIN: 'vighnesh153.com',
+    SAME_SITE: isProduction() ? 'strict' : 'none',
+    XSRF_COOKIE_NAME: 'vighnesh153-XSRF-TOKEN',
+  },
+  SESSION: {
+    DURATION: 7 * 24 * 60 * 60 * 1000,  // 7 days
+    HASH_KEY: process.env.SESSION_HASH_KEY,
+  },
 
   // Table names
   TABLE_NAMES: {
