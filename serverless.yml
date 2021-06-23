@@ -13,6 +13,9 @@ custom:
   profile:
     dev: vighnesh153
     prod: vighnesh153
+  prune:
+    automatic: true
+    number: 3
   logRetentionInDays: 14
   sessionHashKey: 'identifier'
   stage: '${self:provider.stage}'
@@ -23,6 +26,7 @@ custom:
 plugins:
   - serverless-domain-manager
   - serverless-plugin-log-retention
+  - serverless-prune-plugin
 
 package:
   individually: true
