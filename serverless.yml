@@ -35,6 +35,14 @@ plugins:
 
 package:
   individually: true
+  patterns:
+    - 'src'
+    - 'handler.js'
+    - '!src/public'
+    - '!node_modules'
+    - '!local-server.js'
+    - '!package-lock.json'
+    - '!README.md'
 
 provider:
   name: aws
@@ -61,18 +69,18 @@ provider:
     USERS_TABLE: '${self:custom.usersTableName}'
     SESSIONS_TABLE: '${self:custom.sessionsTableName}'
     SESSION_HASH_KEY: '${self:custom.sessionHashKey}'
-    BACKEND_BUCKET: '${self:custom.backendBucketName}'
+    PUBLIC_ASSETS_BUCKET_NAME: '${self:custom.publicAssetsBucketName}'
+    BACKEND_BUCKET_NAME: '${self:custom.backendBucketName}'
     COOKIE_SECRET: '${param:COOKIE_SECRET}'
     DOMAIN: '${param:DOMAIN}'
     STAGE: '${param:STAGE}'
-    AUTH_CLIENT_URL: '${param:AUTH_CLIENT_URL}'
     GOOGLE_ADMIN_EMAILS: 'vighnesh.raut13@gmail.com,me@vighnesh153.com'
     GOOGLE_CLIENT_ID: '${param:GOOGLE_CLIENT_ID}'
     GOOGLE_CLIENT_SECRET: '${param:GOOGLE_CLIENT_SECRET}'
 
 layers:
-  nodeModules:
-    path: node_modules
+  NodeModules:
+    path: layer
     compatibleRuntimes:
       - nodejs14.x
     retain: false

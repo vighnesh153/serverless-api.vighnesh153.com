@@ -36,10 +36,21 @@ const config = {
     SESSIONS: process.env.SESSIONS_TABLE,
   },
 
+  // S3 buckets
+  S3_BUCKETS: {
+    PUBLIC_ASSETS: {
+      NAME: process.env.PUBLIC_ASSETS_BUCKET_NAME,
+      URL: `https://s3.amazonaws.com/${process.env.PUBLIC_ASSETS_BUCKET_NAME}`,
+    },
+    BACKEND: {
+      NAME: process.env.BACKEND_BUCKET_NAME,
+      URL: `https://s3.amazonaws.com/${process.env.BACKEND_BUCKET_NAME}`,
+    },
+  },
+
   // URL meta information
   DOMAIN: process.env.DOMAIN || addMissingEnvVar('DOMAIN'),
   HOST_URL: `https://${process.env.DOMAIN}`,
-  AUTH_CLIENT_URL: process.env.AUTH_CLIENT_URL || addMissingEnvVar('AUTH_CLIENT_URL'),
 
   // Google Details
   GOOGLE_ADMIN_EMAILS: process.env.GOOGLE_ADMIN_EMAILS.split(','),
