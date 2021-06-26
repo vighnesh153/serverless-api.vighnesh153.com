@@ -22,7 +22,7 @@ module.exports = function configureExpress(app) {
   app.use(express.json({ limit: '100kb' }));
 
   // public dir config
-  app.set('public', 'src/public');
+  app.use(express.static('src/public'))
 
   // view engine  config
   app.set('view engine', 'ejs');

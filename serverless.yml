@@ -16,17 +16,22 @@ custom:
   prune:
     automatic: true
     number: 3
+  s3Sync:
+    - bucketName: ${self:custom.publicAssetsBucketName}
+      localDir: 'src/public'
   logRetentionInDays: 14
   sessionHashKey: 'identifier'
   stage: '${self:provider.stage}'
   usersTableName: 'users-table-${self:provider.stage}'
   sessionsTableName: 'sessions-table-${self:provider.stage}'
   backendBucketName: 'backend-bucket.api.vighnesh153.com-${self:provider.stage}'
+  publicAssetsBucketName: 'public-assets-bucket.api.vighnesh153.com-${self:provider.stage}'
 
 plugins:
   - serverless-domain-manager
   - serverless-plugin-log-retention
   - serverless-prune-plugin
+  - serverless-s3-sync
 
 package:
   individually: true
@@ -37,15 +42,6 @@ provider:
   lambdaHashingVersion: '20201221'
   stage: dev
   profile: ${self:custom.profile.${self:custom.stage}}
-#  http:
-#    cors:
-#      allowedOrigins:
-#        - "http://localhost:3000"
-#        - "https://auth.vighnesh153.com"
-#      allowedHeaders:
-#        - Content-Type
-#      allowedMethods: "*"
-#      allowCredentials: true
   iam:
     role:
       statements:
@@ -74,9 +70,19 @@ provider:
     GOOGLE_CLIENT_ID: '${param:GOOGLE_CLIENT_ID}'
     GOOGLE_CLIENT_SECRET: '${param:GOOGLE_CLIENT_SECRET}'
 
+layers:
+  nodeModules:
+    path: node_modules
+    compatibleRuntimes:
+      - nodejs14.x
+    retain: false
+
 functions:
   api:
     handler: handler.handler
+    memorySize: 512
+    layers:
+      - { Ref: NodeModulesLambdaLayer }
     events:
       - http:
           path: /
@@ -125,6 +131,11 @@ resources:
           - AttributeName: ${self:custom.sessionHashKey}
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+
+    PublicAssetsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.publicAssetsBucketName}
 
     BackendBucket:
       Type: AWS::S3::Bucket
