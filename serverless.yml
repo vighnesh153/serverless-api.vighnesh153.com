@@ -8,7 +8,7 @@ custom:
   customDomain:
     domainName: '${param:DOMAIN}'
     basePath: ''
-    stage: ${self:provider.stage}
+    stage: ${self:custom.stage}
     createRoute53Record: true
   profile:
     dev: vighnesh153
@@ -21,11 +21,11 @@ custom:
       localDir: 'src/public'
   logRetentionInDays: 14
   sessionHashKey: 'identifier'
-  stage: '${self:provider.stage}'
-  usersTableName: 'users-table-${self:provider.stage}'
-  sessionsTableName: 'sessions-table-${self:provider.stage}'
-  backendBucketName: 'backend-bucket.api.vighnesh153.com-${self:provider.stage}'
-  publicAssetsBucketName: 'public-assets-bucket.api.vighnesh153.com-${self:provider.stage}'
+  stage: '${opt:stage, self:provider.stage}'
+  usersTableName: 'users-table-${self:custom.stage}'
+  sessionsTableName: 'sessions-table-${self:custom.stage}'
+  backendBucketName: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
+  publicAssetsBucketName: 'public-assets-bucket.api.vighnesh153.com-${self:custom.stage}'
 
 plugins:
   - serverless-domain-manager
