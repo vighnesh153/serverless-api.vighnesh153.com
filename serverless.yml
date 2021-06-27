@@ -118,12 +118,6 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: userFullName
-            AttributeType: S
-          - AttributeName: userImageUrl
-            AttributeType: S
-          - AttributeName: userRoles
-            AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
