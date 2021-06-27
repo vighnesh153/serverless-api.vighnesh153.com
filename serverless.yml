@@ -144,6 +144,12 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.publicAssetsBucketName}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: [ '*' ]
+              AllowedMethods: [ GET, PUT ]
+              AllowedOrigins: [ '*' ]
+              MaxAge: '3600'
 
     BucketAllowPublicReadPolicy:
       Type: AWS::S3::BucketPolicy

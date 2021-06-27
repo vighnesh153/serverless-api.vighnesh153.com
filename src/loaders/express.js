@@ -6,6 +6,8 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 
+const config = require('../config');
+
 module.exports = function configureExpress(app) {
   // cors configuration
   app.use(cors({
@@ -21,8 +23,17 @@ module.exports = function configureExpress(app) {
   // JSON body parser
   app.use(express.json({ limit: '100kb' }));
 
-  // public dir config
-  app.use(express.static('src/public'))
+  app.use((req, res, next) => {
+    res.set(
+      'content-security-policy',
+      // "default-src *; " +
+      `script-src 'self' ${config.S3_BUCKETS.PUBLIC_ASSETS.URL}/ 'unsafe-inline' 'unsafe-eval'; ` +
+      `img-src 'self' ${config.S3_BUCKETS.PUBLIC_ASSETS.URL}/ data: 'unsafe-inline'; ` +
+      `style-src 'self' ${config.S3_BUCKETS.PUBLIC_ASSETS.URL}/ 'unsafe-inline'; ` +
+      ''
+    );
+    next();
+  });
 
   // view engine  config
   app.set('view engine', 'ejs');
