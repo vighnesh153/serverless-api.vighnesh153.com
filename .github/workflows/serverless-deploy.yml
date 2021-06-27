@@ -12,6 +12,9 @@ jobs:
         with:
           node-version: '14.x'
 
+      - name: Install serverless globally
+        run: npm install -g serverless
+
       - name: Install NPM dependencies
         run: npm install
 
