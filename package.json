@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "layer-deps-install": "mkdir -p ./layer/nodejs && cp package.json ./layer/nodejs && npm --prefix ./layer/nodejs install --production",
+    "postinstall": "mkdir -p ./layer/nodejs && cp package.json ./layer/nodejs && npm --prefix ./layer/nodejs install --production",
     "start": "nodemon local-server.js",
     "deploy:prod": "SLS_DEBUG=* serverless deploy -s prod"
   },
