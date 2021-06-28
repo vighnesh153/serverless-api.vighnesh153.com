@@ -27,9 +27,9 @@ module.exports = function configureExpress(app) {
     res.set(
       'content-security-policy',
       // "default-src *; " +
-      `script-src 'self' ${config.S3_BUCKETS.PUBLIC_ASSETS.URL}/ 'unsafe-inline' 'unsafe-eval'; ` +
-      `img-src 'self' ${config.S3_BUCKETS.PUBLIC_ASSETS.URL}/ data: 'unsafe-inline'; ` +
-      `style-src 'self' ${config.S3_BUCKETS.PUBLIC_ASSETS.URL}/ 'unsafe-inline'; ` +
+      `script-src 'self' ${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/ 'unsafe-inline' 'unsafe-eval'; ` +
+      `img-src 'self' ${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/ data: 'unsafe-inline'; ` +
+      `style-src 'self' ${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/ 'unsafe-inline'; ` +
       ''
     );
     next();

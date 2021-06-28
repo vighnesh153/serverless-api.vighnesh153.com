@@ -48,6 +48,14 @@ const config = {
     },
   },
 
+  // Cloudfront
+  CLOUDFRONT: {
+    PUBLIC_ASSETS: {
+      DOMAIN: process.env.PUBLIC_ASSETS_CLOUDFRONT_ALIAS,
+      URL: `https://${process.env.PUBLIC_ASSETS_CLOUDFRONT_ALIAS}`,
+    },
+  },
+
   // URL meta information
   DOMAIN: process.env.DOMAIN || addMissingEnvVar('DOMAIN'),
   HOST_URL: `https://${process.env.DOMAIN}`,

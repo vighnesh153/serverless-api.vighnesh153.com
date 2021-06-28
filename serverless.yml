@@ -72,6 +72,7 @@ provider:
     SESSIONS_TABLE: '${self:custom.sessionsTableName}'
     SESSION_HASH_KEY: '${self:custom.sessionHashKey}'
     PUBLIC_ASSETS_BUCKET_NAME: '${self:custom.publicAssetsBucketName}'
+    PUBLIC_ASSETS_CLOUDFRONT_ALIAS: '${self:custom.publicAssetsCloudfrontAlias}'
     BACKEND_BUCKET_NAME: '${self:custom.backendBucketName}'
     COOKIE_SECRET: '${param:COOKIE_SECRET}'
     DOMAIN: '${param:DOMAIN}'
