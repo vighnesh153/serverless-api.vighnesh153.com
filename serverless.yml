@@ -19,6 +19,7 @@ custom:
   s3Sync:
     - bucketName: ${self:custom.publicAssetsBucketName}
       localDir: 'src/public'
+  hostedZoneId: '${param:HOSTED_ZONE_ID}'   # Hosted zone ID of aws.vighnesh153.com
   logRetentionInDays: 14
   sessionHashKey: 'identifier'
   stage: '${opt:stage, self:provider.stage}'
@@ -26,6 +27,7 @@ custom:
   sessionsTableName: 'sessions-table-${self:custom.stage}'
   backendBucketName: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
   publicAssetsBucketName: 'public-assets-bucket.api.vighnesh153.com-${self:custom.stage}'
+  publicAssetsCloudfrontAlias: 'public-assets-${self:custom.stage}.aws.vighnesh153.com'
 
 plugins:
   - serverless-domain-manager
@@ -145,7 +147,55 @@ resources:
               AllowedOrigins: [ '*' ]
               MaxAge: '3600'
 
-    BucketAllowPublicReadPolicy:
+    PublicAssetsCloudfrontCert:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${self:custom.publicAssetsCloudfrontAlias}
+        DomainValidationOptions:
+          - DomainName: ${self:custom.publicAssetsCloudfrontAlias}
+            HostedZoneId: ${self:custom.hostedZoneId}
+        ValidationMethod: DNS
+
+    PublicAssetsOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: 'access-identity-${self:custom.publicAssetsBucketName}.s3.amazonaws.com'
+
+    PublicAssetsCloudfrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Aliases:
+            - ${self:custom.publicAssetsCloudfrontAlias}
+          Comment: 'Public Assets: ${self:custom.stage}'
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            CachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6'  # Reference (managed policy -> Managed-CachingOptimized): https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
+            Compress: true
+            ViewerProtocolPolicy: 'redirect-to-https'
+            TargetOriginId: 'S3-${self:custom.publicAssetsBucketName}'
+          Enabled: true
+          Origins:
+            - ConnectionAttempts: 3
+              ConnectionTimeout: 10
+              DomainName: '${self:custom.publicAssetsBucketName}.s3.amazonaws.com'
+              Id: 'S3-${self:custom.publicAssetsBucketName}'
+              S3OriginConfig:
+                OriginAccessIdentity: !Join [ "", [ "origin-access-identity/cloudfront/", !Ref PublicAssetsOriginAccessIdentity ] ]
+          PriceClass: PriceClass_All
+          ViewerCertificate:
+            AcmCertificateArn: !Ref PublicAssetsCloudfrontCert
+            MinimumProtocolVersion: TLSv1.2_2019
+            SslSupportMethod: sni-only
+
+
+    PublicAssetsBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
         Bucket: !Ref PublicAssetsBucket
@@ -157,7 +207,9 @@ resources:
                 - "s3:GetObject"
               Resource:
                 - !Join ['/', [!GetAtt [PublicAssetsBucket, Arn], '*']]
-              Principal: "*"
+              Principal:
+                CanonicalUser:
+                  Fn::GetAtt: [ PublicAssetsOriginAccessIdentity , S3CanonicalUserId ]
 
     BackendBucket:
       Type: AWS::S3::Bucket
