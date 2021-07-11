@@ -76,6 +76,7 @@ provider:
           Resource:
             - Fn::GetAtt: [ UsersTable, Arn ]
             - Fn::GetAtt: [ SessionsTable, Arn ]
+            - Fn::GetAtt: [ AuditTable, Arn ]
   environment:
     USERS_TABLE: '${self:custom.table.names.users}'
     SESSIONS_TABLE: '${self:custom.table.names.sessions}'

@@ -1,0 +1,47 @@
+<script type="text/javascript">
+  const validRedirectDomain = (domain = '') => {
+    const commonValidity = domain.includes('/') === false;
+    const devValidity = domain.startsWith('localhost');
+    const prodValidity = domain.endsWith('vighnesh153.com');
+
+    if (isProduction() === false) {
+      return commonValidity && (devValidity || prodValidity);
+    }
+    return commonValidity && prodValidity;
+  };
+
+  (() => {
+    console.log('in main');
+
+    let redirectInfo;
+    try {
+      console.log('parsing redirect info from local storage');
+      redirectInfo = JSON.parse(localStorage.getItem('redirectInfo'));
+      console.log(redirectInfo);
+    } catch (e) {
+      console.log(e);
+      redirectInfo = {};
+    }
+
+    if (!redirectInfo.redirectDomain) {
+      console.log('No redirect domain provided');
+      return;
+    }
+
+    console.log('validating redirect domain');
+
+    if (validRedirectDomain(redirectInfo.redirectDomain)) {
+      console.log('VALID redirect domain. Redirecting...');
+
+      const {redirectDomain, redirectPath, secureRedirect} = redirectInfo;
+      const redirectUrl = `${secureRedirect ? 'https' : 'http'}://${redirectDomain}${redirectPath}`;
+
+      console.log('redirectUrl', redirectUrl);
+
+      window.location.href = redirectUrl;
+      return;
+    }
+
+    console.log('INVALID redirect domain');
+  })();
+</script>

@@ -1,0 +1,17 @@
+<script type="text/javascript">
+  (() => {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    const redirectDomain = searchParams.get('redirect_domain') || '';
+    const redirectPath = searchParams.get('redirect_path') || '';
+    const secureRedirect = `${searchParams.get('secure_redirect')}` === 'true';
+
+    const redirectInfo = {
+      redirectDomain,
+      redirectPath,
+      secureRedirect,
+    };
+
+    localStorage.setItem('redirectInfo', JSON.stringify(redirectInfo));
+  })();
+</script>
