@@ -18,8 +18,9 @@ function formatGoogleProfile(profile) {
     name: profile.displayName || profile.given_name || 'User',
     userId: profile.id,
     profileImage: profile.picture,
-    roles: '',
-    provider: 'google',
+    roles: roles.join(','),
+    provider: profile.provider,
+    email: profile.email,
     language: profile.language || 'en',
   };
   if (isAdminProfile(profile)) {
@@ -38,6 +39,8 @@ passport.use(new GoogleStrategy({
   },
   async function(request, accessToken, refreshToken, profile, done) {
     try {
+      console.log('Inside afterGoogleLoginCB');
+      console.log('profile', profile);
       const userObj = await Dynamo.read(config.TABLE_NAMES.USERS, {
         userId: profile.id,
       });

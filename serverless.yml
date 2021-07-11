@@ -3,6 +3,8 @@ app: serverless-api-vighnesh153-com
 service: serverless-api-vighnesh153-com
 
 frameworkVersion: '2'
+#configValidationMode: warn
+#useDotenv: false
 
 custom:
   customDomain:
@@ -17,17 +19,24 @@ custom:
     automatic: true
     number: 3
   s3Sync:
-    - bucketName: ${self:custom.publicAssetsBucketName}
+    - bucketName: ${self:custom.bucket.names.publicAssets}
       localDir: 'src/public'
   hostedZoneId: '${param:HOSTED_ZONE_ID}'   # Hosted zone ID of aws.vighnesh153.com
   logRetentionInDays: 14
   sessionHashKey: 'identifier'
   stage: '${opt:stage, self:provider.stage}'
-  usersTableName: 'users-table-${self:custom.stage}'
-  sessionsTableName: 'sessions-table-${self:custom.stage}'
-  backendBucketName: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
-  publicAssetsBucketName: 'public-assets-bucket.api.vighnesh153.com-${self:custom.stage}'
-  publicAssetsCloudfrontAlias: 'public-assets-${self:custom.stage}.aws.vighnesh153.com'
+  table:
+    names:
+      users: 'users-table-${self:custom.stage}'
+      sessions: 'sessions-table-${self:custom.stage}'
+      audits: 'audits-table-${self:custom.stage}'
+  bucket:
+    names:
+      backend: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
+      publicAssets: 'public-assets-bucket.api.vighnesh153.com-${self:custom.stage}'
+  cloudfront:
+    aliases:
+      publicAssets: 'public-assets-${self:custom.stage}.aws.vighnesh153.com'
 
 plugins:
   - serverless-domain-manager
@@ -68,12 +77,13 @@ provider:
             - Fn::GetAtt: [ UsersTable, Arn ]
             - Fn::GetAtt: [ SessionsTable, Arn ]
   environment:
-    USERS_TABLE: '${self:custom.usersTableName}'
-    SESSIONS_TABLE: '${self:custom.sessionsTableName}'
+    USERS_TABLE: '${self:custom.table.names.users}'
+    SESSIONS_TABLE: '${self:custom.table.names.sessions}'
+    AUDITS_TABLE: '${self:custom.table.names.audits}'
     SESSION_HASH_KEY: '${self:custom.sessionHashKey}'
-    PUBLIC_ASSETS_BUCKET_NAME: '${self:custom.publicAssetsBucketName}'
-    PUBLIC_ASSETS_CLOUDFRONT_ALIAS: '${self:custom.publicAssetsCloudfrontAlias}'
-    BACKEND_BUCKET_NAME: '${self:custom.backendBucketName}'
+    PUBLIC_ASSETS_BUCKET_NAME: '${self:custom.bucket.names.publicAssets}'
+    PUBLIC_ASSETS_CLOUDFRONT_ALIAS: '${self:custom.cloudfront.aliases.publicAssets}'
+    BACKEND_BUCKET_NAME: '${self:custom.bucket.names.backend}'
     COOKIE_SECRET: '${param:COOKIE_SECRET}'
     DOMAIN: '${param:DOMAIN}'
     STAGE: '${param:STAGE}'
@@ -117,7 +127,7 @@ resources:
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.usersTableName}
+        TableName: ${self:custom.table.names.users}
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
@@ -128,7 +138,7 @@ resources:
     SessionsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.sessionsTableName}
+        TableName: ${self:custom.table.names.sessions}
         AttributeDefinitions:
           - AttributeName: ${self:custom.sessionHashKey}
             AttributeType: S
@@ -136,11 +146,22 @@ resources:
           - AttributeName: ${self:custom.sessionHashKey}
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+    AuditTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.table.names.audits}
+        AttributeDefinitions:
+          - AttributeName: auditId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: auditId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
 
     PublicAssetsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.publicAssetsBucketName}
+        BucketName: ${self:custom.bucket.names.publicAssets}
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders: [ '*' ]
@@ -156,9 +177,9 @@ resources:
     PublicAssetsCloudfrontCert:
       Type: AWS::CertificateManager::Certificate
       Properties:
-        DomainName: ${self:custom.publicAssetsCloudfrontAlias}
+        DomainName: ${self:custom.cloudfront.aliases.publicAssets}
         DomainValidationOptions:
-          - DomainName: ${self:custom.publicAssetsCloudfrontAlias}
+          - DomainName: ${self:custom.cloudfront.aliases.publicAssets}
             HostedZoneId: ${self:custom.hostedZoneId}
         ValidationMethod: DNS
 
@@ -166,14 +187,14 @@ resources:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
         CloudFrontOriginAccessIdentityConfig:
-          Comment: 'access-identity-${self:custom.publicAssetsBucketName}.s3.amazonaws.com'
+          Comment: 'access-identity-${self:custom.bucket.names.publicAssets}.s3.amazonaws.com'
 
     PublicAssetsCloudfrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
         DistributionConfig:
           Aliases:
-            - ${self:custom.publicAssetsCloudfrontAlias}
+            - ${self:custom.cloudfront.aliases.publicAssets}
           Comment: 'Public Assets: ${self:custom.stage}'
           DefaultCacheBehavior:
             AllowedMethods:
@@ -185,13 +206,13 @@ resources:
             CachePolicyId: '658327ea-f89d-4fab-a63d-7e88639e58f6'  # Reference (managed policy -> Managed-CachingOptimized): https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
             Compress: true
             ViewerProtocolPolicy: 'redirect-to-https'
-            TargetOriginId: 'S3-${self:custom.publicAssetsBucketName}'
+            TargetOriginId: 'S3-${self:custom.bucket.names.publicAssets}'
           Enabled: true
           Origins:
             - ConnectionAttempts: 3
               ConnectionTimeout: 10
-              DomainName: '${self:custom.publicAssetsBucketName}.s3.amazonaws.com'
-              Id: 'S3-${self:custom.publicAssetsBucketName}'
+              DomainName: '${self:custom.bucket.names.publicAssets}.s3.amazonaws.com'
+              Id: 'S3-${self:custom.bucket.names.publicAssets}'
               S3OriginConfig:
                 OriginAccessIdentity: !Join [ "", [ "origin-access-identity/cloudfront/", !Ref PublicAssetsOriginAccessIdentity ] ]
           PriceClass: PriceClass_All
@@ -220,4 +241,4 @@ resources:
     BackendBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.backendBucketName}
+        BucketName: ${self:custom.bucket.names.backend}

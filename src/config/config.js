@@ -34,6 +34,7 @@ const config = {
   TABLE_NAMES: {
     USERS: process.env.USERS_TABLE,
     SESSIONS: process.env.SESSIONS_TABLE,
+    AUDITS: process.env.AUDITS_TABLE,
   },
 
   // S3 buckets

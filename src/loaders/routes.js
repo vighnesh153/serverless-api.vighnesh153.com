@@ -12,6 +12,8 @@ module.exports = function routesLoader(app) {
 
   app.use('/auth', authRoutes);
 
+  app.use(middlewares.genericErrorHandler);
+
   // 404
   app.use(middlewares.rootWildcardHandler);
 };
