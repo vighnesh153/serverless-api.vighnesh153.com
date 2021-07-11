@@ -5,6 +5,8 @@
 const passport = require('passport');
 const config = require('../../config');
 
+const middlewares = require('../../middlewares');
+
 const commonData = {config};
 
 const router = require('express').Router();
@@ -64,10 +66,14 @@ router.get('/login-success', (req, res) => {
   res.render('loginSuccess', { ...commonData, });
 });
 
-router.get('/login-failed', (req, res) => {
-  console.log('Inside /auth/login-failed');
-  res.render('loginFailed', { ...commonData, });
-});
+router.get(
+  '/login-failed',
+  middlewares.logoutUser(true),
+  (req, res) => {
+    console.log('Inside /auth/login-failed');
+    res.render('loginFailed', { ...commonData, });
+  },
+);
 
 router.get('/google',
   passport.authenticate('google', { scope:

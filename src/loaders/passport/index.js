@@ -7,6 +7,8 @@ const passport = require('passport');
 const config = require('../../config');
 const Dynamo = require('../../services/Dynamo');
 
+const {Audit} = require('../../util');
+
 
 // Configure strategies
 require('./GoogleStrategy');
@@ -24,13 +26,19 @@ passport.deserializeUser(async (userId, done) => {
   console.log('userId:', userId);
   try {
     const userObj = await Dynamo.read(config.TABLE_NAMES.USERS, {userId})
-    if (userObj.Item) {
-      console.log('user:', userObj.Item);
-      done(null, userObj.Item);
-    } else {
+
+    if (!userObj.Item) {
       const err = new Error(`Couldn't deserialize user with id: "${userId}"`);
       done(err, null);
+      return;
     }
+
+    const user = userObj.Item;
+    console.log('user:', user);
+
+    done(null, user);
+    await Audit.userLogin(user);
+
   } catch (err) {
     console.log('passport.deserializeUser [CATCH]:', err)
     done(err, null);

@@ -16,10 +16,7 @@ const rootWildcardHandler = (req, res) => {
   });
 };
 
-const genericErrorHandler = (err, req, res, next) => {
-  console.log('Inside genericErrorHandler');
-  console.log('error', err);
-
+const logoutUser = (callNextAfter = true) => (req, res, next) => {
   try {
     console.log('destroying express session');
     req.session.destroy((err) => {
@@ -30,21 +27,28 @@ const genericErrorHandler = (err, req, res, next) => {
       });
       if (err) {
         console.log('sessionDestroy error', err);
+        if (callNextAfter) {
+          return next();
+        }
         return res.status(400).json({
           title: 'Failed to destroy the session',
           message: '😭',
         })
-      } else {
-        console.log('destroyed express session');
-        return res.status(400).json({
-          title: 'User logged out..',
-          message: 'Khatam',
-        })
       }
+      console.log('destroyed express session');
+      if (callNextAfter) {
+        return next();
+      }
+      return res.status(400).json({
+        title: 'User logged out..',
+        message: 'Khatam',
+      })
     })
   } catch (err) {
-    console.log('failed to destroy express session');
-    console.log(err);
+    console.log('error destroying express session', err);
+    if (callNextAfter) {
+      return next();
+    }
     return res.status(500).json({
       title: 'Some error occurred',
       message: err?.message || '',
@@ -52,10 +56,26 @@ const genericErrorHandler = (err, req, res, next) => {
   }
 };
 
+const genericErrorHandler = (err, req, res, next) => {
+  console.log('Inside genericErrorHandler');
+  console.log('error', err);
+
+  if (`${err.message}`.includes("Couldn't deserialize user with id")) {
+    console.log('Logging user out...');
+    return logoutUser(false)(req, res, next);
+  }
+
+  return res.status(500).json({
+    title: 'Some error occurred',
+    message: err?.message || '',
+  })
+};
+
 const middlewares = {
   healthCheck,
   genericErrorHandler,
   rootWildcardHandler,
+  logoutUser,
 };
 
 module.exports = middlewares;

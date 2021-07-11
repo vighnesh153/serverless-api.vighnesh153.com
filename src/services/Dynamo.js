@@ -7,6 +7,11 @@ const AWS = require("aws-sdk");
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
 module.exports = {
+  /**
+   * @param tableName
+   * @param key
+   * @return {Promise}
+   */
   read: (tableName, key) => {
     const params = {
       TableName: tableName,
@@ -15,6 +20,12 @@ module.exports = {
 
     return dynamoDbClient.get(params).promise();
   },
+
+  /**
+   * @param tableName
+   * @param item
+   * @return {Promise}
+   */
   write: (tableName, item) => {
     const params = {
       TableName: tableName,
