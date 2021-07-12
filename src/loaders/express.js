@@ -18,22 +18,19 @@ module.exports = function configureExpress(app) {
   }));
 
   // important security headers
-  app.use(helmet());
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: config.CONTENT_SECURITY_POLICY.DEFAULT_SRC,
+        scriptSrc: ["'unsafe-inline'", "'unsafe-eval'", "'self'", ...config.CONTENT_SECURITY_POLICY.SCRIPTS_SRC],
+        imgSrc: ["'unsafe-inline'", "data:", "blob:", "'self'", ...config.CONTENT_SECURITY_POLICY.IMAGE_SRC],
+        styleSrc: ["'unsafe-inline'", "'self'", ...config.CONTENT_SECURITY_POLICY.STYLES_SRC],
+      },
+    },
+  }));
 
   // JSON body parser
   app.use(express.json({ limit: '100kb' }));
-
-  app.use((req, res, next) => {
-    res.set(
-      'content-security-policy',
-      // "default-src *; " +
-      `script-src 'self' ${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/ 'unsafe-inline' 'unsafe-eval'; ` +
-      `img-src 'self' ${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/ data: 'unsafe-inline'; ` +
-      `style-src 'self' ${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/ 'unsafe-inline'; ` +
-      ''
-    );
-    next();
-  });
 
   // view engine  config
   app.set('view engine', 'ejs');

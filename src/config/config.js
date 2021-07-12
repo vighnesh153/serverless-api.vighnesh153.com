@@ -17,6 +17,7 @@ const config = {
 
   // Server configurations
   ENV: environment,
+  ROOT_DOMAIN: 'vighnesh153.com',
   COOKIE: {
     SECURE: true,
     SECRET: process.env.COOKIE_SECRET || addMissingEnvVar('COOKIE_SECRET'),
@@ -57,6 +58,14 @@ const config = {
     },
   },
 
+  // Content Security Policy
+  CONTENT_SECURITY_POLICY: {
+    DEFAULT_SRC: [],
+    SCRIPTS_SRC: [],
+    STYLES_SRC: [],
+    IMAGE_SRC: [],
+  },
+
   // URL meta information
   DOMAIN: process.env.DOMAIN || addMissingEnvVar('DOMAIN'),
   HOST_URL: `https://${process.env.DOMAIN}`,
@@ -72,6 +81,16 @@ const config = {
     isProduction,
   },
 };
+
+config.CONTENT_SECURITY_POLICY.SCRIPTS_SRC = [
+  `${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/`,
+];
+config.CONTENT_SECURITY_POLICY.STYLES_SRC = [
+  `${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/`,
+];
+config.CONTENT_SECURITY_POLICY.IMAGE_SRC = [
+  `${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/`,
+];
 
 if (missingEnvVars.length > 0) {
   console.log('Missing environment variables:');
