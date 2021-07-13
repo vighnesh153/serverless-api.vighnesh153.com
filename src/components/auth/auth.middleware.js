@@ -53,7 +53,7 @@ exports.homePage = (req, res) => {
 
   // If not authenticated, render the loginWithGoogle view
   if (!req.user) {
-    return res.render('loginWithGoogle', { ...commonData, });
+    return res.render(config.VIEWS.AUTH.LOGIN_WITH_GOOGLE, { ...commonData, });
   }
 
   // If redirect domain is not provided, redirect to login-success
@@ -67,7 +67,7 @@ exports.homePage = (req, res) => {
   }
 
   // If redirect domain is invalid, render the invalidRedirectUrl view
-  return res.render('invalidRedirectUrl', { ...commonData, });
+  return res.render(config.VIEWS.AUTH.INVALID_REDIRECT_URL, { ...commonData, });
 };
 
 
@@ -90,7 +90,7 @@ exports.loginSuccess = (req, res) => {
   }
 
   // If user is authenticated, render the loginSuccess page
-  res.render('loginSuccess', { ...commonData, });
+  res.render(config.VIEWS.AUTH.LOGIN_SUCCESS, { ...commonData, });
 };
 
 
@@ -103,7 +103,7 @@ exports.loginSuccess = (req, res) => {
  */
 exports.loginFailed = (req, res) => {
   console.log('Inside /auth/login-failed');
-  res.render('loginFailed', { ...commonData, });
+  res.render(config.VIEWS.AUTH.LOGIN_FAILED, { ...commonData, });
 };
 
 
@@ -146,5 +146,5 @@ exports.getUserDetails = (req, res) => {
 exports.genericNotFound = (req, res) => {
   console.log('404 route triggerred');
   console.log('req', req);
-  res.render('404', { ...commonData, })
+  res.render(config.VIEWS[404], { ...commonData, })
 };

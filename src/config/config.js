@@ -77,6 +77,16 @@ const config = {
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 
+  VIEWS: {
+    AUTH: {
+      LOGIN_SUCCESS: 'auth-views/loginSuccess',
+      LOGIN_FAILED: 'auth-views/loginFailed',
+      LOGIN_WITH_GOOGLE: 'auth-views/loginWithGoogle',
+      INVALID_REDIRECT_URL: 'auth-views/invalidRedirectUrl',
+    },
+    404: '404',
+  },
+
   UTILS: {
     isProduction,
   },
