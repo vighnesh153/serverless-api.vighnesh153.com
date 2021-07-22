@@ -29,7 +29,7 @@ custom:
     names:
       users: 'users-table-${self:custom.stage}'
       sessions: 'sessions-table-${self:custom.stage}'
-      audits: 'audits-table-${self:custom.stage}'
+      audits: 'audit-table-${self:custom.stage}'
   bucket:
     names:
       backend: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
@@ -154,9 +154,13 @@ resources:
         AttributeDefinitions:
           - AttributeName: auditId
             AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
         KeySchema:
           - AttributeName: auditId
             KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 
     PublicAssetsBucket:

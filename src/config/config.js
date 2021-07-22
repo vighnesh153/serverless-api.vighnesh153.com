@@ -84,6 +84,9 @@ const config = {
       LOGIN_WITH_GOOGLE: 'auth/loginWithGoogle',
       INVALID_REDIRECT_URL: 'auth/invalidRedirectUrl',
     },
+    ADMIN: {
+      DASHBOARD: 'admin/dashboard',
+    },
     404: '404',
   },
 

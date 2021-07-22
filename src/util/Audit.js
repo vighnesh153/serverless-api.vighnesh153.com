@@ -42,10 +42,10 @@ class Audit {
    */
   static #add = (auditObj) => {
     const timestamp = new Date().toUTCString();
-
     return Dynamo.write(config.TABLE_NAMES.AUDITS, {
       auditId: uuid(),
       timestamp,
+      userName: auditObj.userName,
       resource: JSON.stringify(auditObj.resource),
       payload: JSON.stringify(auditObj.action.payload),
       action: auditObj.action.type,

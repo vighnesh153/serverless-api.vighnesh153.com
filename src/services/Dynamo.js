@@ -6,6 +6,10 @@ const AWS = require("aws-sdk");
 
 const dynamoDbClient = new AWS.DynamoDB.DocumentClient();
 
+dynamoDbClient.batchGet({
+
+})
+
 module.exports = {
   /**
    * @param tableName
@@ -19,6 +23,20 @@ module.exports = {
     };
 
     return dynamoDbClient.get(params).promise();
+  },
+
+  /**
+   * @param {string} tableName
+   * @param {Object} restParams
+   * @return {Promise}
+   */
+  batchRead: (tableName, restParams) => {
+    const params = {
+      TableName: tableName,
+      ...restParams,
+    };
+
+    return dynamoDbClient.query(params).promise();
   },
 
   /**
