@@ -24,6 +24,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (userId, done) => {
   console.log('Inside passport.deserializeUser');
   console.log('userId:', userId);
+
   try {
     const userObj = await Dynamo.read(config.TABLE_NAMES.USERS, {userId})
 

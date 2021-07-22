@@ -33,6 +33,7 @@ class Audit {
    *      email: string,
    *      profileImage: string,
    *      userId: string,
+   *      createdAt: string
    *      name: string,
    *      roles: string,
    *      banned: boolean,
@@ -58,6 +59,7 @@ class Audit {
    *    email: string,
    *    profileImage: string,
    *    userId: string,
+   *    createdAt: string,
    *    name: string,
    *    roles: string,
    *    banned: boolean,
@@ -84,6 +86,7 @@ class Audit {
    *    email: string,
    *    profileImage: string,
    *    userId: string,
+   *    createdAt: string
    *    name: string,
    *    roles: string,
    *    banned: boolean,
