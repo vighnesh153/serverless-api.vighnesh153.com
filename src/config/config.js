@@ -87,6 +87,11 @@ const config = {
     404: '404',
   },
 
+  ROLES: {
+    ADMIN: 'admin',
+    USER: 'user',
+  },
+
   UTILS: {
     isProduction,
   },

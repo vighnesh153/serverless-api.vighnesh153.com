@@ -28,10 +28,12 @@ class Audit {
    *      type: string,
    *      payload: any,
    *    },
+   *    userName: string,
    *    user: {
    *      email: string,
    *      profileImage: string,
    *      userId: string,
+   *      name: string,
    *      roles: string,
    *      banned: boolean,
    *    },
@@ -56,6 +58,7 @@ class Audit {
    *    email: string,
    *    profileImage: string,
    *    userId: string,
+   *    name: string,
    *    roles: string,
    *    banned: boolean,
    *  }}
@@ -67,6 +70,7 @@ class Audit {
         key: Audit.#resources.AUTH,
         public: false,
       },
+      userName: user.name,
       user,
       action: {
         payload: {},
@@ -80,6 +84,7 @@ class Audit {
    *    email: string,
    *    profileImage: string,
    *    userId: string,
+   *    name: string,
    *    roles: string,
    *    banned: boolean,
    *  }}
@@ -91,6 +96,7 @@ class Audit {
         key: Audit.#resources.AUTH,
         public: false,
       },
+      userName: user.name,
       user,
       action: {
         payload: {},
