@@ -79,10 +79,10 @@ const config = {
 
   VIEWS: {
     AUTH: {
-      LOGIN_SUCCESS: 'auth-views/loginSuccess',
-      LOGIN_FAILED: 'auth-views/loginFailed',
-      LOGIN_WITH_GOOGLE: 'auth-views/loginWithGoogle',
-      INVALID_REDIRECT_URL: 'auth-views/invalidRedirectUrl',
+      LOGIN_SUCCESS: 'auth/loginSuccess',
+      LOGIN_FAILED: 'auth/loginFailed',
+      LOGIN_WITH_GOOGLE: 'auth/loginWithGoogle',
+      INVALID_REDIRECT_URL: 'auth/invalidRedirectUrl',
     },
     404: '404',
   },
