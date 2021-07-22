@@ -26,10 +26,11 @@ custom:
   sessionHashKey: 'identifier'
   stage: '${opt:stage, self:provider.stage}'
   table:
+    suffix: 'sls-api'
     names:
-      users: 'users-table-${self:custom.stage}'
-      sessions: 'sessions-table-${self:custom.stage}'
-      audits: 'audit-table-${self:custom.stage}'
+      users: 'users-${self:custom.stage}-${self:custom.table.suffix}'
+      sessions: 'sessions-${self:custom.stage}-${self:custom.table.suffix}'
+      audits: 'audits-${self:custom.stage}-${self:custom.table.suffix}'
   bucket:
     names:
       backend: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
@@ -132,9 +133,13 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
         KeySchema:
           - AttributeName: userId
             KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
     SessionsTable:
       Type: AWS::DynamoDB::Table

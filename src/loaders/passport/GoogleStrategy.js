@@ -24,6 +24,9 @@ function formatGoogleProfile(profile) {
     email: profile.email,
     language: profile.language || 'en',
     banned: false,
+    createdAt: new Date().toUTCString(),
+    updatedAt: new Date().toUTCString(),
+    deletedAt: null,
   };
   if (isAdminProfile(profile)) {
     roles.push('admin');
