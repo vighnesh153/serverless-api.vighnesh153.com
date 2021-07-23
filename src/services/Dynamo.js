@@ -30,13 +30,13 @@ module.exports = {
    * @param {Object} restParams
    * @return {Promise}
    */
-  batchRead: (tableName, restParams) => {
+  scanRead: (tableName, restParams) => {
     const params = {
       TableName: tableName,
       ...restParams,
     };
 
-    return dynamoDbClient.query(params).promise();
+    return dynamoDbClient.scan(params).promise();
   },
 
   /**

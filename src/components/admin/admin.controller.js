@@ -12,10 +12,11 @@ const commonData = {config};
 
 // Dashboard
 router.get('/', async (req, res) => {
-  const audits = await Dynamo.batchRead(config.TABLE_NAMES.AUDITS, {
+  const audits = await Dynamo.scanRead(config.TABLE_NAMES.AUDITS, {
     Limit: 5,
   })
-  return res.render(config.VIEWS.ADMIN.DASHBOARD, { ...commonData, audits, });
+  console.log(audits);
+  return res.render(config.VIEWS.ADMIN.DASHBOARD, { ...commonData, audits: audits.Items, });
 });
 
 router.use((req, res) => {
