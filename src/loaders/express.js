@@ -25,6 +25,8 @@ module.exports = function configureExpress(app) {
         scriptSrc: ["'unsafe-inline'", "'unsafe-eval'", "'self'", ...config.CONTENT_SECURITY_POLICY.SCRIPTS_SRC],
         imgSrc: ["'unsafe-inline'", "data:", "blob:", "'self'", ...config.CONTENT_SECURITY_POLICY.IMAGE_SRC],
         styleSrc: ["'unsafe-inline'", "'self'", ...config.CONTENT_SECURITY_POLICY.STYLES_SRC],
+        connectSrc: ["'unsafe-inline'", "'self'", ...config.CONTENT_SECURITY_POLICY.CONNECT_SRC],
+        fontSrc: ["'unsafe-inline'", "'self'", ...config.CONTENT_SECURITY_POLICY.FONT_SRC],
       },
     },
   }));

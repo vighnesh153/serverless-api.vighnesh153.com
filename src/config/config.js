@@ -19,10 +19,10 @@ const config = {
   ENV: environment,
   ROOT_DOMAIN: 'vighnesh153.com',
   COOKIE: {
-    SECURE: true,
+    SECURE: process.env.COOKIE_SECURE ? process.env.COOKIE_SECURE === 'true' : true,
     SECRET: process.env.COOKIE_SECRET || addMissingEnvVar('COOKIE_SECRET'),
-    DOMAIN: 'vighnesh153.com',
-    SAME_SITE: isProduction() ? 'strict' : 'none',
+    DOMAIN: process.env.COOKIE_DOMAIN || 'vighnesh153.com',
+    SAME_SITE: isProduction() ? 'strict' : 'lax',
     XSRF_COOKIE_NAME: 'vighnesh153-XSRF-TOKEN',
   },
   SESSION: {
@@ -64,6 +64,8 @@ const config = {
     SCRIPTS_SRC: [],
     STYLES_SRC: [],
     IMAGE_SRC: [],
+    CONNECT_SRC: [],
+    FONT_SRC: [],
   },
 
   // URL meta information
@@ -84,9 +86,6 @@ const config = {
       LOGIN_WITH_GOOGLE: 'auth/loginWithGoogle',
       INVALID_REDIRECT_URL: 'auth/invalidRedirectUrl',
     },
-    ADMIN: {
-      DASHBOARD: 'admin/dashboard',
-    },
     404: '404',
   },
 
@@ -100,14 +99,20 @@ const config = {
   },
 };
 
-config.CONTENT_SECURITY_POLICY.SCRIPTS_SRC = [
+config.CONTENT_SECURITY_POLICY.DEFAULT_SRC = [
   `${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/`,
+];
+config.CONTENT_SECURITY_POLICY.SCRIPTS_SRC = [
+  ...config.CONTENT_SECURITY_POLICY.DEFAULT_SRC,
 ];
 config.CONTENT_SECURITY_POLICY.STYLES_SRC = [
-  `${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/`,
+  ...config.CONTENT_SECURITY_POLICY.DEFAULT_SRC,
 ];
 config.CONTENT_SECURITY_POLICY.IMAGE_SRC = [
-  `${config.CLOUDFRONT.PUBLIC_ASSETS.URL}/`,
+  ...config.CONTENT_SECURITY_POLICY.DEFAULT_SRC,
+];
+config.CONTENT_SECURITY_POLICY.FONT_SRC = [
+  ...config.CONTENT_SECURITY_POLICY.DEFAULT_SRC,
 ];
 
 if (missingEnvVars.length > 0) {
