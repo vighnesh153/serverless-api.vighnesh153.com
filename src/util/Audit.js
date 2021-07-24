@@ -43,13 +43,16 @@ class Audit {
    */
   static #add = (auditObj) => {
     const date = new Date();
+    const stringifiedPayload = JSON.stringify(auditObj.action.payload);
     return Dynamo.write(config.TABLE_NAMES.AUDITS, {
       auditId: uuid(),
       timestamp: date.toUTCString(),
+      timestampDateString: date.toDateString(),
       timestampForSorting: date.getTime(),
       userName: auditObj.userName,
       resource: JSON.stringify(auditObj.resource),
-      payload: JSON.stringify(auditObj.action.payload),
+      payload: stringifiedPayload,
+      payloadSize: (new TextEncoder().encode(stringifiedPayload)).length,
       action: auditObj.action.type,
       user: JSON.stringify(auditObj.user),
     });

@@ -30,7 +30,7 @@ custom:
     names:
       users: 'users-${self:custom.stage}-${self:custom.table.suffix}'
       sessions: 'sessions-${self:custom.stage}-${self:custom.table.suffix}'
-      audits: 'audits-${self:custom.stage}-${self:custom.table.suffix}'
+      audits: 'audit-${self:custom.stage}-${self:custom.table.suffix}'
   bucket:
     names:
       backend: 'backend-bucket.api.vighnesh153.com-${self:custom.stage}'
@@ -153,12 +153,12 @@ resources:
       Properties:
         TableName: ${self:custom.table.names.audits}
         AttributeDefinitions:
-          - AttributeName: auditId
+          - AttributeName: timestampDateString
             AttributeType: S
           - AttributeName: timestampForSorting
             AttributeType: N
         KeySchema:
-          - AttributeName: auditId
+          - AttributeName: timestampDateString
             KeyType: HASH
           - AttributeName: timestampForSorting
             KeyType: RANGE
