@@ -29,7 +29,7 @@
     "@types/uuid": "^8.3.1",
     "aws-sdk": "^2.951.0",
     "dotenv": "^10.0.0",
-    "nodemon": "^2.0.7",
+    "nodemon": "^2.0.20",
     "serverless-domain-manager": "^5.1.0",
     "serverless-plugin-log-retention": "^2.0.0",
     "serverless-prune-plugin": "^1.5.0",
